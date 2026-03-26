@@ -1,6 +1,6 @@
 # String_View
 
-A simple and efficient C library for handling string views/slices without unnecessary memory allocation. I was inspired by this vedio [C 语言的字符串太糟糕了！ | Tsoding](https://www.bilibili.com/video/BV16kAjzzEck/?share_source=copy_web&vd_source=267788d5bc046ec90dbdd1a97885eeaf), and decided to try to make my own implement as a practice.
+A simple and efficient C library for handling string views/slices without unnecessary memory allocation. I was inspired by this video [C 语言的字符串太糟糕了！ | Tsoding](https://www.bilibili.com/video/BV16kAjzzEck/?share_source=copy_web&vd_source=267788d5bc046ec90dbdd1a97885eeaf), and decided to try to make my own implement as a practice.
 
 ## Overview
 
@@ -22,6 +22,10 @@ This library provides a `String_View` struct, which is a non-owning reference to
 - `sv_trim(String_View* sv)`: Removes whitespace characters from both ends of the view.
 - `sv_split_by_delim(String_View* sv, char delim)`: Splits the view at the first occurrence of `delim`. Returns a new `String_View` for the part before the delimiter. The original view (`sv`) is modified to start after the delimiter. If the delimiter is not found, it returns a copy of the original view and makes the input view empty.
 - `sv_to_string(String_View *sv)`: Allocates a new C string (null-terminated) containing a copy of the view's data. The caller is responsible for freeing the returned pointer with `free()`.
+- `sv_substr(String_View *sv, size_t start, size_t end)`: Returns a new `String_View` representing the substring in the range `[start, end)`. Bounds are automatically clamped to the original view's length.
+- `sv_prefix(String_View *sv, size_t length)`: Returns a new `String_View` containing the first `length` characters of `sv`. If `length` is greater than `sv->length`, the entire view is returned.
+- `sv_suffix(String_View *sv, size_t start)`: Returns a new `String_View` starting from offset `start` to the end of `sv`. If `start` is greater than `sv->length`, an empty view is returned.
+- `sv_split_by_type(String_View *sv, int (*type)(int c))`: Splits the view at the first character where the provided function `type(c)` returns true. Returns a new `String_View` for the part before the delimiter. The original view (`sv`) is modified to start after the delimiter. If no such character is found, it returns a copy of the original view and makes the input view empty.
 
 ## Macros
 

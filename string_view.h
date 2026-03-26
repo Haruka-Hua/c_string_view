@@ -70,9 +70,70 @@ String_View sv_split_by_delim(String_View* sv, char delim){
     }
 }
 
+String_View sv_split_by_type(String_View *sv, int (*type)(int c)){
+    /*
+    split a string view by a type of delimiters
+    */
+    size_t delim_pos = 0;
+    while (delim_pos<sv->length && !type(sv->data[delim_pos])){
+        delim_pos += 1;
+    }
+    if(delim_pos < sv->length){
+        String_View res = (String_View){
+            .data =  sv->data,
+            .length = delim_pos,
+        };
+        sv_chop_left(sv,delim_pos+1);
+        return res;
+    } else {
+        String_View res = *sv;
+        sv_chop_left(sv,sv->length);
+        return res;
+    }
+}
+
 char *sv_to_string(String_View *sv){
     char *s = (char*)malloc(sv->length+1);
     memcpy(s,sv->data,sv->length);
     s[sv->length] = '\0';
     return s;
+}
+
+String_View sv_substr(String_View *sv, size_t start, size_t end){
+    /*
+    return substring in range [start,end)
+    */
+    if (end > sv->length){
+        end = sv->length;
+    }
+    if (start > end){
+        start = end;
+    }
+    String_View res = (String_View){
+        .data = sv->data + start,
+        .length = end-start,
+    };
+    return res;
+}
+
+String_View sv_prefix(String_View *sv, size_t length){
+    if (length > sv->length){
+        length = sv->length;
+    }
+    String_View res = (String_View){
+        .data = sv->data,
+        .length = length,
+    };
+    return res;
+}
+
+String_View sv_suffix(String_View *sv, size_t start){
+    if(start > sv->length){
+        start = sv->length;
+    }
+    String_View res = (String_View){
+        .data = sv->data + start,
+        .length = sv->length - start,
+    };
+    return res;
 }

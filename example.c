@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h> // For isspace, isdigit, etc.
 #include "string_view.h"
 
 int main() {
@@ -35,8 +36,8 @@ int main() {
     sv_chop_right(&chop_sv, 1);
     printf("Chop right 1: " SvPrtFmt "\n\n", SvPrtArg(chop_sv));
 
-    // --- Example 4: Splitting ---
-    printf("--- Example 4: Splitting ---\n");
+    // --- Example 4: Splitting by Delimiter ---
+    printf("--- Example 4: Splitting by Delimiter ---\n");
     char csv_line[] = "apple,banana,cherry,end";
     String_View split_sv = make_sv(csv_line);
     String_View token;
@@ -62,6 +63,46 @@ int main() {
         free(extracted_cstr); // Don't forget to free the allocated memory!
     } else {
         printf("Failed to allocate memory for C-string.\n");
+    }
+    printf("\n");
+
+    // --- Example 6: Substring Functions ---
+    printf("--- Example 6: Substring Functions ---\n");
+    char subtext[] = "Hello, World!";
+    String_View sub_sv = make_sv(subtext);
+
+    printf("Original: " SvPrtFmt "\n", SvPrtArg(sub_sv));
+
+    // Using sv_substr
+    String_View sub1 = sv_substr(&sub_sv, 7, 12); // "World"
+    printf("sv_substr(7, 12): " SvPrtFmt "\n", SvPrtArg(sub1));
+
+    // Using sv_prefix
+    String_View sub2 = sv_prefix(&sub_sv, 5); // "Hello"
+    printf("sv_prefix(5): " SvPrtFmt "\n", SvPrtArg(sub2));
+
+    // Using sv_suffix
+    String_View sub3 = sv_suffix(&sub_sv, 7); // "World!"
+    printf("sv_suffix(7): " SvPrtFmt "\n\n", SvPrtArg(sub3));
+
+    // --- Example 7: Splitting by Type ---
+    printf("--- Example 7: Splitting by Type ---\n");
+    char mixed_text[] = "word1 123 word2 456 word3";
+    String_View type_split_sv = make_sv(mixed_text);
+    
+    printf("Splitting by isspace (words): " SvPrtFmt "\n", SvPrtArg(type_split_sv));
+    while (type_split_sv.length > 0) {
+        String_View part = sv_split_by_type(&type_split_sv, isspace);
+        printf("Part: [" SvPrtFmt "]\n", SvPrtArg(part));
+    }
+    printf("\n");
+
+    // Reset the view for another example
+    type_split_sv = make_sv(mixed_text);
+    printf("Splitting by isdigit (non-digits): " SvPrtFmt "\n", SvPrtArg(type_split_sv));
+    while (type_split_sv.length > 0) {
+        String_View part = sv_split_by_type(&type_split_sv, isdigit);
+        printf("Non-digit part: [" SvPrtFmt "]\n", SvPrtArg(part));
     }
 
     return 0;
