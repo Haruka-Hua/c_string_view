@@ -70,10 +70,10 @@ String_View sv_split_by_delim(String_View* sv, char delim){
     }
 }
 
+/*
+Split a string view by a type of delimiters.
+*/
 String_View sv_split_by_type(String_View *sv, int (*type)(int c)){
-    /*
-    split a string view by a type of delimiters
-    */
     size_t delim_pos = 0;
     while (delim_pos<sv->length && !type(sv->data[delim_pos])){
         delim_pos += 1;
@@ -99,10 +99,11 @@ char *sv_to_string(String_View *sv){
     return s;
 }
 
+/*
+Return substring in range [start,end).
+Return an empty String_View if pair (start, end) is invalid.
+*/
 String_View sv_substr(String_View *sv, size_t start, size_t end){
-    /*
-    return substring in range [start,end)
-    */
     if (end > sv->length){
         end = sv->length;
     }
@@ -116,6 +117,10 @@ String_View sv_substr(String_View *sv, size_t start, size_t end){
     return res;
 }
 
+/* 
+Return prefix with length length.
+If length < length of the String_View, then return the whole String_View.
+*/
 String_View sv_prefix(String_View *sv, size_t length){
     if (length > sv->length){
         length = sv->length;
@@ -127,6 +132,10 @@ String_View sv_prefix(String_View *sv, size_t length){
     return res;
 }
 
+/* 
+Return suffix with length length.
+If length < length of the String_View, then return the whole String_View.
+*/
 String_View sv_suffix(String_View *sv, size_t start){
     if(start > sv->length){
         start = sv->length;
@@ -136,4 +145,47 @@ String_View sv_suffix(String_View *sv, size_t start){
         .length = sv->length - start,
     };
     return res;
+}
+
+int sv_starts_with(const String_View *sv, const String_View *prefix){
+    if(sv->length < prefix->length)
+        return 0;
+    int x =  memcmp(sv->data, prefix->data, prefix->length)==0;
+    return x;
+}
+
+int sv_ends_with(const String_View *sv, const String_View *suffix){
+    if(sv->length < suffix->length)
+        return 0;
+    return memcmp(sv->data, suffix->data, suffix->length)==0;
+}
+
+int sv_contains(const String_View *sv, const String_View *sub){
+    if(sv->length < sub->length)
+        return 0;
+    int start_pos = 0;
+    while(start_pos + sub->length <= sv->length){
+        if(memcmp(sv->data+start_pos, sub->data, sub->length)==0)
+            return 1;
+        start_pos++;       
+    }
+    return 0;
+}
+
+int sv_is_empty(String_View *sv){
+    return sv->length == 0;
+}
+
+int sv_eq(const String_View *sv1, const String_View *sv2){
+    if(sv1->length != sv2->length)
+        return 0;
+    return memcmp(sv1->data, sv2->data, sv1->length)==0;
+}
+
+size_t sv_length(String_View *sv){
+    return sv->length;
+}
+
+void print_sv(const String_View* sv){
+    printf(SvPrtFmt,SvPrtArg(*sv));
 }

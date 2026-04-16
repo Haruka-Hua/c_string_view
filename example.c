@@ -105,5 +105,40 @@ int main() {
         printf("Non-digit part: [" SvPrtFmt "]\n", SvPrtArg(part));
     }
 
+
+    // --- Example 8: sv_starts_with & sv_ends_with ---
+    printf("--- Example 8: sv_starts_with & sv_ends_with ---\n");
+    String_View hello_sv = make_sv("hello world");
+    String_View prefix_sv = make_sv("hello");
+    String_View suffix_sv = make_sv("world");
+    printf("Starts with 'hello': %s\n", sv_starts_with(&hello_sv, &prefix_sv) == 1 ? "YES" : "NO");
+    printf("Ends with 'world': %s\n", sv_ends_with(&hello_sv, &suffix_sv) == 1 ? "YES" : "NO");
+    printf("\n");
+
+    // --- Example 9: sv_contains ---
+    printf("--- Example 9: sv_contains ---\n");
+    String_View contain_sv = make_sv("abcdefg");
+    String_View sub_sv_1 = make_sv("cde");
+    printf("Contains 'cde': %s\n", sv_contains(&contain_sv, &sub_sv_1) ? "YES" : "NO");
+    String_View not_sub_sv = make_sv("xyz");
+    printf("Contains 'xyz': %s\n", sv_contains(&contain_sv, &not_sub_sv) ? "YES" : "NO");
+    printf("\n");
+
+    // --- Example 10: sv_eq ---
+    printf("--- Example 10: sv_eq ---\n");
+    String_View eq1 = make_sv("abc");
+    String_View eq2 = make_sv("abc");
+    String_View eq3 = make_sv("abcd");
+    printf("'abc' == 'abc': %s\n", sv_eq(&eq1, &eq2) ? "YES" : "NO");
+    printf("'abc' == 'abcd': %s\n", sv_eq(&eq1, &eq3) ? "YES" : "NO");
+    printf("\n");
+
+    // --- Example 11: sv_is_empty & sv_length ---
+    printf("--- Example 11: sv_is_empty & sv_length ---\n");
+    String_View empty_sv = make_sv("");
+    printf("Is empty: %s\n", sv_is_empty(&empty_sv) ? "YES" : "NO");
+    printf("Length of 'hello world': %zu\n", sv_length(&hello_sv));
+    printf("\n");
+
     return 0;
 }
